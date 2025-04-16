@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 type Job = {
-    id: number;
+    id: string;
     title: string;
     company: string;
     location: string;
@@ -16,7 +16,7 @@ type Job = {
   
 
 export default function DashboardPage() {
-  const [jobs, setJobs] = useState([]);
+   const [jobs, setJobs] = useState<Job[]>([]);
   const [form, setForm] = useState({ title: '', company: '', location: '', jobType: '', description: '' });
   const router = useRouter();
 
@@ -27,11 +27,25 @@ export default function DashboardPage() {
 
     const fetchJobs = async () => {
       const res = await fetch('/api/jobs', {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
-      const data = await res.json();
+    
+      if (!res.ok) {
+        console.error('Failed to fetch jobs:', res.status);
+        return;
+      }
+    
+      // Only parse JSON if response has content
+      const text = await res.text();
+      if (!text) {
+        console.warn('Empty response body from jobs API');
+        return;
+      }
+    
+      const data = JSON.parse(text);
       setJobs(data);
     };
+    
     fetchJobs();
   }, []);
 
@@ -54,17 +68,21 @@ export default function DashboardPage() {
   };
   
 
-  const deleteJob = async (id: number) => {
+  const deleteJob = async (id: string) => {
+    const confirmed = window.confirm("Are you sure you want to delete this job?");
+    if (!confirmed) return;
+  
     const res = await fetch('/api/jobs', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`, // assuming token is available
       },
-      body: JSON.stringify({ id })
+      body: JSON.stringify({ id }),
     });
+  
     if (res.ok) {
-        const [jobs, setJobs] = useState<Job[]>([]);
+      
       setJobs(prev => prev.filter(job => job.id !== id));
     }
   };
