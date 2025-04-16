@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Navbar from './components/Navbar';
 
 export default function HomePage() {
   const [jobs, setJobs] = useState([]);
@@ -15,7 +16,9 @@ export default function HomePage() {
   }, []);
 
   return (
+    <><Navbar></Navbar>
     <div className="p-6">
+        
       <h1 className="text-3xl font-bold mb-4">Job Listings</h1>
       <div className="space-y-4">
         {jobs.map((job: any) => (
@@ -28,5 +31,6 @@ export default function HomePage() {
         ))}
       </div>
     </div>
+    </>
   );
 }
