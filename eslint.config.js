@@ -1,4 +1,4 @@
-// eslint.config.js
-module.exports = {
-    ignores: ["**/generated/prisma/**"]
-  };
+// // eslint.config.js
+// module.exports = {
+//     ignores: ["**/generated/prisma/**"]
+//   };
