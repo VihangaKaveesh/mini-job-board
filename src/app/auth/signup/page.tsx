@@ -10,12 +10,13 @@ export default function SignupPage() {
   const handleSignup = async () => {
     const res = await fetch('/api/auth', {
       method: 'POST',
-      body: JSON.stringify({ ...form, action: 'signup' }),
+      body: JSON.stringify({ ...form, type: 'signup' }),
       headers: { 'Content-Type': 'application/json' },
     });
 
     const data = await res.json();
-    if (data.success) {
+    if (data.token) {
+      localStorage.setItem('token', data.token);
       router.push('/auth/login');
     } else {
       alert(data.error || 'Signup failed');
